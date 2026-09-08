@@ -5,12 +5,6 @@ const { nanoid } = require('nanoid');
 const app = express();
 app.use(express.json());
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/shareddb';
-
-mongoose.connect(MONGO_URL)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
 const urlSchema = new mongoose.Schema({
   shortCode: { type: String, required: true, unique: true },
   originalUrl: { type: String, required: true },
@@ -32,4 +26,4 @@ app.get('/:code', async (req, res) => {
   res.redirect(entry.originalUrl);
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+module.exports = app;
