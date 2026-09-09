@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { nanoid } = require('nanoid'); // Make sure nanoid v3 is installed (npm i nanoid@3)
+const { nanoid } = require('nanoid');
 
 const app = express();
 app.use(express.json());
@@ -10,6 +10,11 @@ const urlSchema = new mongoose.Schema({
   originalUrl: { type: String, required: true },
 });
 const Url = mongoose.model('Url', urlSchema);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 app.post('/shorten', async (req, res) => {
   const { url } = req.body;
@@ -26,7 +31,5 @@ app.get('/:code', async (req, res) => {
   res.redirect(entry.originalUrl);
 });
 
+// Always place module.exports at the very bottom
 module.exports = app;
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
