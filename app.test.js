@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('./server'); // or './app' depending on your entry point
+const app = require('./app'); // or './app' depending on your entry point
 
 const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/testdb';
 
