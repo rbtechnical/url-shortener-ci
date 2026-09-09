@@ -1,15 +1,25 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('./app'); // or './app' depending on your entry point
+const app = require('./server');
 
-const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/testdb';
+const MONGO_URI = process.env.MONGO_URL || 'mongodb://127.0.1:27017/testdb';
 
 beforeAll(async () => {
-  await mongoose.connect(MONGO_URI);
+  // Prevent long connection buffering timeouts during test setup
+  mongoose.set('bufferCommands', false);
+  try {
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 2000, // Timeout after 2 seconds if DB is unreachable
+    });
+  } catch (err) {
+    console.warn('MongoDB connection failed in test setup:', err.message);
+  }
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.connection.close();
+  }
 });
 
 describe('URL shortener', () => {
