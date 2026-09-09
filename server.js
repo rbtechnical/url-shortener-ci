@@ -27,3 +27,6 @@ app.get('/:code', async (req, res) => {
 });
 
 module.exports = app;
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});

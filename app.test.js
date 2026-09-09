@@ -1,17 +1,28 @@
-   const request = require('supertest');
-   const app = require('./server');
+const request = require('supertest');
+const mongoose = require('mongoose');
+const app = require('./server'); // or './app' depending on your entry point
 
-   describe('URL shortener', () => {
-     it('health check returns 200', async () => {
-       const res = await request(app).get('/health');
-       expect(res.statusCode).toBe(200);
-     });
+const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/testdb';
 
-     it('shortens a URL', async () => {
-       const res = await request(app)
-         .post('/shorten')
-         .send({ url: 'https://example.com' });
-       expect(res.statusCode).toBe(200);
-       expect(res.body).toHaveProperty('shortCode');
-     });
-   });
+beforeAll(async () => {
+  await mongoose.connect(MONGO_URI);
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+describe('URL shortener', () => {
+  it('health check returns 200', async () => {
+    const res = await request(app).get('/health');
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('shortens a URL', async () => {
+    const res = await request(app)
+      .post('/shorten')
+      .send({ url: 'https://example.com' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('shortUrl');
+  });
+});
