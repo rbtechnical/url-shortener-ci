@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { nanoid } = require('nanoid');
+const { nanoid } = require('nanoid'); // Make sure nanoid v3 is installed (npm i nanoid@3)
 
 const app = express();
 app.use(express.json());
